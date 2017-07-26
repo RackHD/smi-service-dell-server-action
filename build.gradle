@@ -16,9 +16,11 @@ def _url = 'http://support.dell.com'
 def _arch = 'x86_64'
 def _os = 'LINUX'
 def _release = 1
+def _sourcePaths=[]
 
 sourceCompatibility = 1.8
 version = "${version}"
+dockerTag = "${dockerTag}"
 group = 'com.dell.isg.smi'
 
 buildscript {
@@ -76,28 +78,29 @@ jar {
 
 repositories {
 	mavenLocal()
-	maven {
-		url "${artifactory_contextUrl}/libs-release"
-	}
+	maven { url "${artifactory_contextUrl}/libs-snapshot" }
+	maven { url "${artifactory_contextUrl}/libs-release" }
+	maven { url "https://repo.maven.apache.org/maven2" }
 }
 
 dependencies {
-	compile 'com.dell.isg.smi:wsmanlib:+'
-	compile 'com.dell.isg.smi:wsmanclient:+'
-  	compile 'com.dell.isg.smi:commons-elm:+'
-	compile 'com.dell.isg.smi:commons-model:+'
-	compile 'com.dell.isg.smi:adapter-server:+'
+	compile 'com.dell.isg.smi:wsmanlib:1.0-SNAPSHOT'
+	compile 'com.dell.isg.smi:wsmanclient:1.0-SNAPSHOT'
+  	compile 'com.dell.isg.smi:commons-elm:1.0.76'
+  	compile 'com.dell.isg.smi:commons-utilities:1.0.32'
+	compile 'com.dell.isg.smi:commons-model:1.0.80'
+	compile 'com.dell.isg.smi:adapter-server:1.0-SNAPSHOT'
 	compile "org.springframework.boot:spring-boot-starter-web"
 	compile "org.springframework.boot:spring-boot-starter-tomcat"
     compile "org.springframework.boot:spring-boot-starter-actuator"
     compile 'org.springframework.cloud:spring-cloud-starter-consul-all'
 	compile "org.springframework:spring-web"
-	runtime group: 'wiseman', name: 'wiseman', version: '+'
-	compile group: 'org.apache.commons', name: 'commons-collections4', version: '+'
-	compile group: 'org.apache.commons', name: 'commons-lang3', version: '+'
-	compile group: 'commons-beanutils', name: 'commons-beanutils', version: '+'
-	compile group: "io.springfox", name: "springfox-swagger2", version: "+"
-	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '+'
+	runtime group: 'com.dell.isg.smi', name: 'wiseman', version: '1.0.5'
+	compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
+	compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.3'
+	compile group: "io.springfox", name: "springfox-swagger2", version: "2.7.0"
+	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
 	
 }
 
@@ -197,3 +200,36 @@ task generateDeb(type: Deb){
 	link('/etc/systemd/system/multi-user.target.wants/dell-server-action.service', '/etc/systemd/system/dell-server-action.service')
 }
 
+
+task buildSourcePathsArray(dependsOn: 'eclipseClasspath' ){
+	doLast{
+		def classpathFile = file('.classpath')
+		if( classpathFile.exists() ) {
+			def cpXml = new XmlParser().parse(classpathFile)
+			cpXml.classpathentry.each {
+				if('lib' == it.@kind ) {
+					if( it.@sourcepath == null ){
+						println 'missing source jar for:' + it.@path
+					}
+					else{
+					 	_sourcePaths.add(it.@sourcepath)
+					}
+				}
+			}
+		}
+		 
+		def arrayLength = _sourcePaths.size()
+		println 'sourcePaths length is:' + arrayLength
+	}
+}
+
+
+task dependencySourcesZip(type: Zip, dependsOn: 'buildSourcePathsArray' ) {
+	destinationDir = project.file('build/distributions')
+	destinationDir.mkdirs()
+	baseName = "smi-service-dell-server-action-dependency-sources"
+	version = "${dockerTag}"
+	outputs.upToDateWhen { false }
+ 
+    from _sourcePaths
+}
