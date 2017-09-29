@@ -6,6 +6,8 @@ A Java Spring Boot Microservice that provides a REST API used to initiate server
 
 A docker container for this service is available at: https://hub.docker.com/r/rackhd/dell-server-action/
 
+Copyright © 2017 Dell Inc. or its subsidiaries.  All Rights Reserved. 
+
 #### Startup
 
 ~~~
