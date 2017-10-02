@@ -9,6 +9,7 @@ import java.util.Locale;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.AbstractProtocol;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
@@ -42,6 +43,9 @@ public class Application extends WebMvcConfigurerAdapter {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
+    
+	@Autowired
+	private BuildInfo buildInfo;
 
 
     @Bean
@@ -68,14 +72,8 @@ public class Application extends WebMvcConfigurerAdapter {
 
     @Bean
     public Docket newsApi() {
-        return new Docket(DocumentationType.SWAGGER_2).groupName("serverAction").apiInfo(apiInfo()).select().paths(regex("/api.*")).build();
+        return new Docket(DocumentationType.SWAGGER_2).groupName("serverAction").apiInfo(new ApiInfoBuilder().title("SMI Micro-service : Server Actions").version(buildInfo.toString()).build()).select().paths(regex("/api.*")).build();
     }
-
-
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("SMI Micro-service : Server Actions").description("Micro-service for running server actions via wsman.").termsOfServiceUrl("http://www.dell.com/smi/server/action").license("Dell SMI License Version 1.0").licenseUrl("www.dell.com/smi").version("1.0 dev").build();
-    }
-
 
     @Bean
     public EmbeddedServletContainerFactory servletContainerFactory() {

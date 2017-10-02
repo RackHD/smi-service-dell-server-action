@@ -27,10 +27,10 @@ public class ActionManagerImpl implements IActionManager {
         case RESET:
             status = serverAdapterImpl.resetServer(wsmanCredentials);
             break;
-        case ON:
+        case POWER_ON:
             status = serverAdapterImpl.manageServerPower(wsmanCredentials, action);
             break;
-        case OFF:
+        case POWER_OFF:
             status = serverAdapterImpl.manageServerPower(wsmanCredentials, action);
             break;
         case REBOOT:
