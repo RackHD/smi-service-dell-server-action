@@ -5,7 +5,7 @@ package com.dell.isg.smi.service.server.action.controller;
 
 public enum ServerActionsEnum {
 
-    ON("ON"), OFF("OFF"), REBOOT("REBOOT"), EJECT("EJECT"), RESET("RESET"), SET_TSM("SET_TSM"), CLEAR_TSM("CLEAR_TSM");
+    POWER_ON("POWER_ON"), POWER_OFF("POWER_OFF"), REBOOT("REBOOT"), EJECT("EJECT"), RESET("RESET"), SET_TSM("SET_TSM"), CLEAR_TSM("CLEAR_TSM");
 
     private String _label;
 

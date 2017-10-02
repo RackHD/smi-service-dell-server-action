@@ -38,7 +38,7 @@ public class ServerActionController {
 
 
     @RequestMapping(value = "/power/{action}", method = RequestMethod.POST, headers = "Accept=application/json", consumes = "application/json", produces = "application/json")
-    @ApiOperation(value = "/power/{action}", nickname = "actions", notes = "This operation allow user to manage server power - OFF/ON/REBOOT/EJECT/RESET/SET_TSM/CLEAR_TSM throu wsman.", response = ResponseString.class)
+    @ApiOperation(value = "/power/{action}", nickname = "actions", notes = "This operation allows a user to manage server actions . Action types could be POWER_OFF : POWER_ON : REBOOT : EJECT : RESET : SET_TSM : CLEAR_TSM via the iDRAC using the WSMan protocol.", response = ResponseString.class)
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = String.class), @ApiResponse(code = 401, message = "Unauthorized"), @ApiResponse(code = 403, message = "Forbidden"), @ApiResponse(code = 404, message = "Not Found"), @ApiResponse(code = 500, message = "Failure") })
     public ResponseString actions(@RequestBody Credential credential, @PathVariable("action") String action) {
         logger.trace("Credential for server action : ", credential.getAddress(), credential.getUserName());
@@ -65,7 +65,7 @@ public class ServerActionController {
 
 
     @RequestMapping(value = "/blinkLED/{duration}", method = RequestMethod.POST, headers = "Accept=application/json", consumes = "application/json", produces = "application/json")
-    @ApiOperation(value = "/blinkLED/{duration}", nickname = "blinkLED", notes = "This operation allow user to start blinking LED if duration is greate than 0 otherwise it stops throu wsman.", response = ResponseString.class)
+    @ApiOperation(value = "/blinkLED/{duration}", nickname = "blinkLED", notes = "This operation allows a user to start blinking LED if duration is greater than 0 otherwise it stops via the iDRAC using the WSMan protocol.", response = ResponseString.class)
     @ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = String.class), @ApiResponse(code = 401, message = "Unauthorized"), @ApiResponse(code = 403, message = "Forbidden"), @ApiResponse(code = 404, message = "Not Found"), @ApiResponse(code = 500, message = "Failure") })
 
     public ResponseString blinkLED(@RequestBody Credential credential, @PathVariable("duration") int duration) {

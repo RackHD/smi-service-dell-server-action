@@ -1,0 +1,57 @@
+Purpose
+~~~~~~~
+A Java Spring Boot Microservice that provides a REST API used to initiate server actions such as power control and blink LED.
+
+How to Use
+~~~~~~~~~~
+
+A docker container for this service is available at: https://hub.docker.com/r/rackhd/dell-server-action/
+....
+sudo docker run -p 0.0.0.0:46007:46007 --name dell-server-action -d rackhd/dell-server-action:latest
+....
+
+The service can also start up to bootstrap its configuration from consul. More information about registration with and using advanced configuration settings provided by a Consul K/V store can be found in the online help.
+
+Example Post - Actions
+++++++++++++++++++++++
+
+....
+**Action Type**
+
+POWER_OFF --> Power OFF server.
+POWER_ON --> Power ON server
+REBOOT --> Reboot Server
+EJECT --> Server Eject
+RESET --> Reset Server
+SET_TSM --> Set Server to troubleshoot mode.
+CLEAR_TSM --> Clear server from troubleshoot mode.
+....
+
+http://hostIp:46007/api/1.0/server/action/power/{action}
+
+....
+{
+  "address": "<<Target IDRAC IP>>",
+  "password": "calvin",
+  "userName": "root"
+}
+....
+
+Example Post - Blink LED
+++++++++++++++++++++++++
+
+....
+**Blink LED** 
+Value > 0 (Positive values) --> Blinks LED 
+Value <= 0 (Negative or Zero value) --> Stops LED Blink
+....
+
+http://hostIp:46007/api/1.0/server/action/blinkLED/{duration}
+
+....
+{
+  "address": "<<Target IDRAC IP>>",
+  "password": "calvin",
+  "userName": "root"
+}
+....
